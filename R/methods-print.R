@@ -1,0 +1,56 @@
+#' @export
+S7::method(print, CombatRefQLFit) <- function(x, ...) {
+  outcomes <- stats::setNames(x@diagnostics$outcomes$genes, x@diagnostics$outcomes$outcome)
+  total <- x@diagnostics$timing$seconds[x@diagnostics$timing$stage == "total"]
+  cli::cli_h1("ComBat-refQL fit"); cli::cli_h2("Data")
+  cli::cli_text("{format(nrow(x@counts), big.mark = '')} genes \u00d7 {ncol(x@counts)} samples | {length(unique(x@samples$batch))} batches | {length(unique(stats::na.omit(x@samples$group)))} biological groups")
+  cli::cli_h2("Model")
+  cli::cli_text("Batch effects    Evidence-adaptive EB")
+  cli::cli_text("Dispersion       Hierarchical NB")
+  cli::cli_text("Normalization    {x@specification$normalization}")
+  cli::cli_text("Transport        NB mid-P")
+  cli::cli_text("Reference        {x@specification$reference_batch}")
+  cli::cli_h2("Outcome")
+  labels <- c(adjusted = "Adjusted", unsupported = "Unchanged", failed = "Failed")
+  for (key in names(labels)) {
+    genes <- outcomes[[key]] %||% 0
+    proportion <- if (nrow(x@counts)) 100 * genes / nrow(x@counts) else 0
+    suffix <- if (key == "failed" && genes == 0) "" else
+      sprintf(" (%.1f%%)", proportion)
+    cli::cli_text("{labels[[key]]}         {genes}{suffix}")
+  }
+  if (nrow(x@diagnostics$warnings)) cli::cli_text("  {nrow(x@diagnostics$warnings)} stored warnings")
+  cli::cli_text("")
+  cli::cli_text("Runtime          {format(round(total, 1), nsmall = 1)} s")
+  invisible(x)
+}
+
+#' @export
+S7::method(print, CombatRefQLSummary) <- function(x, ...) {
+  cli::cli_h1("ComBat-refQL summary"); cli::cli_h2("Design"); design <- x@design[1L, ]
+  cli::cli_text("  Samples:          {design$samples}"); cli::cli_text("  Coefficients:     {design$coefficients}")
+  cli::cli_text("  Rank:             {design$rank}"); cli::cli_text("  Residual df:      {design$residual_df}")
+  cli::cli_text("  Condition number: {format(round(design$condition_number, 2), nsmall = 2)}")
+  cli::cli_h2("Reference"); cli::cli_text("  batch  samples  score  selected")
+  for (i in seq_len(nrow(x@batches))) cli::cli_text("  {x@batches$batch[i]}  {x@batches$samples[i]}  {format(signif(x@batches$reference_score[i], 4))}  {if (x@batches$selected[i]) 'yes' else 'no'}")
+  if (x@specification$reference_selection == "automatic") {
+    runner_up <- x@batches$batch[x@batches$second_best]
+    cli::cli_text("  Runner-up: {runner_up}; score margin: {format(signif(x@batches$score_margin[1L], 4))}")
+  }
+  cli::cli_h2("edgeR model"); ql <- x@ql[1L, ]
+  cli::cli_text("  Model-fitting pipeline:  v4"); cli::cli_text("  Robust estimation:      yes")
+  cli::cli_text("  Average QL dispersion:  {format(round(ql$average_ql_dispersion, 3), nsmall = 3)}")
+  cli::cli_text("  Median posterior QL:    {format(round(ql$median_posterior_ql_dispersion, 3), nsmall = 3)}")
+  cli::cli_h2("Batch effects")
+  for (i in seq_len(nrow(x@dispersion))) cli::cli_text(
+    "  {x@dispersion$batch[i]}: dispersion x{format(signif(x@dispersion$multiplier[i], 3))} ({x@dispersion$status[i]})")
+  for (i in seq_len(nrow(x@shrinkage))) cli::cli_text(
+    "  {x@shrinkage$source_batch[i]}: median adaptive weight {format(signif(x@shrinkage$median_weight[i], 3))}")
+  cli::cli_h2("Gene outcomes")
+  labels <- c(adjusted = "Adjusted", unsupported = "Unchanged", failed = "Failed")
+  for (i in seq_len(nrow(x@gene_outcomes))) cli::cli_text("  {labels[[x@gene_outcomes$outcome[i]]]}: {x@gene_outcomes$genes[i]} ({format(round(100*x@gene_outcomes$proportion[i], 1), nsmall=1)}%)")
+  actions <- x@input_actions[x@input_actions$lossy, , drop = FALSE]
+  if (nrow(actions)) { cli::cli_h2("Input actions"); for (message in actions$message) cli::cli_alert_info(message) }
+  cli::cli_h2("Timing"); for (i in seq_len(nrow(x@timings))) cli::cli_text("  {x@timings$stage[i]}: {format(round(x@timings$seconds[i], 2), nsmall=2)} s")
+  invisible(x)
+}

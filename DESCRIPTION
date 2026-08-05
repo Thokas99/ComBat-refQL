@@ -1,0 +1,38 @@
+Package: combatrefql
+Title: ComBat-refQL Reference-Batch Adjustment for RNA-Seq Counts
+Version: 0.0.1
+Authors@R: c(
+    person(
+      "Xiaoyu",
+      "Zhang",
+      role = "ctb",
+      comment = "ComBat-ref method and original implementation"
+    ),
+    person("Thomas", "Sirchi", role = c("aut", "cre"), email = "thomasirchi@gmail.com")
+  )
+Description: Provides a structured interface for adjusting raw RNA-seq counts
+    toward a selected reference batch. The package uses current edgeR
+    model-fitting infrastructure, evidence-adaptive empirical-Bayes batch
+    contrasts, hierarchical batch-specific negative-binomial dispersion,
+    deterministic count transport, and validated S7 objects with tidy diagnostics.
+License: MIT + file LICENSE
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+Depends:
+    R (>= 4.3)
+Imports:
+    S7 (>= 0.2.0),
+    cli,
+    edgeR (>= 4.2.0),
+    stats
+Suggests:
+    devtools,
+    knitr,
+    rmarkdown,
+    SummarizedExperiment,
+    testthat (>= 3.0.0)
+VignetteBuilder: knitr
+Config/testthat/edition: 3
+Config/roxygen2/version: 8.1.0
+URL: https://github.com/Thokas99/ComBat-refQL
+BugReports: https://github.com/Thokas99/ComBat-refQL/issues

@@ -1,0 +1,43 @@
+url: https://github.com/Thokas99/ComBat-refQL
+destination: site
+
+template:
+  bootstrap: 5
+  bslib:
+    bootswatch: flatly
+    primary: "#315B6D"
+    base_font: system-ui
+    code_font: ui-monospace
+
+navbar:
+  structure:
+    left: [intro, reference, method, validation, news]
+    right: [search, github]
+  components:
+    intro:
+      text: Get started
+      href: articles/getting-started.html
+    method:
+      text: Method
+      href: articles/method.html
+    validation:
+      text: Validation
+      href: articles/validation.html
+
+reference:
+  - title: Fit reference-batch adjustment
+    contents:
+      - combat_ref_ql
+  - title: Result objects
+    contents:
+      - CombatRefQLFit
+      - CombatRefQLSummary
+
+articles:
+  - title: Use ComBat-refQL
+    contents:
+      - getting-started
+  - title: Method and validation
+    contents:
+      - method
+      - validation

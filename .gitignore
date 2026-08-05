@@ -1,0 +1,14 @@
+.DS_Store
+*.Rcheck/
+*.tar.gz
+*.tmp
+*.log
+*.png
+*.mat
+*_corrected.mat
+site/
+docs/
+.DS_Store
+validation/.cache/
+.Rhistory
+.Rproj.user/

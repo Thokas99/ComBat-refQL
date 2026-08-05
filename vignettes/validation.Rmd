@@ -1,0 +1,32 @@
+---
+title: "Validation"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Validation}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+The final implementation is tested on the established GFRN signature dataset
+and NASA GeneLab liver collection. The scripts preserve the accepted sample
+definitions and exclude the GLDS-168 NASA stratum.
+
+```{r, eval=FALSE}
+system("Rscript validation/run_all.R")
+metrics <- read.delim("validation/real_data_metrics.tsv")
+metrics
+```
+
+| Dataset | Conditional batch R2 | Mean-alignment RMSE | Descriptive residual logCPM variance alignment |
+|---|---:|---:|---:|
+| GFRN | 0.03111 | 0.08128 | 0.17773 |
+| NASA GeneLab | 0.10079 | 0.19178 | 0.09293 |
+
+`validation/run_all.R` checks these regression anchors directly against the TSV
+output. Reference counts are exactly invariant in both datasets, and the TSV
+also records retained samples/genes, outcomes, reference batch, and
+transformation magnitude.
+
+These quantities describe empirical batch alignment. Residual logCPM variance
+alignment is not negative-binomial dispersion, and neither dataset supplies a
+uniform biological ground truth for all retained batches.

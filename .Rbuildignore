@@ -1,0 +1,10 @@
+^\.github$
+^_pkgdown\.yml$
+^docs$
+^site$
+^validation$
+^LICENSES$
+^\.claude$
+^\.gitnexus$
+^AGENTS\.md$
+^CLAUDE\.md$

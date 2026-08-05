@@ -1,0 +1,37 @@
+---
+title: "Getting started"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Getting started}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+ComBat-refQL expects raw counts with genes in rows and samples in columns. Batch,
+group, and covariate metadata must align with the sample columns.
+
+```{r, eval=FALSE}
+library(combatrefql)
+
+fit <- combat_ref_ql(
+  counts,
+  batch = metadata$batch,
+  group = metadata$condition
+)
+
+fit
+summary(fit)
+corrected <- fit@counts
+```
+
+Set an explicit target with `reference = "batch_name"`; otherwise the method
+selects a reference using biologically adjusted within-batch fits. Reference
+counts remain unchanged.
+
+`fit@gene_status` records adjusted, unsupported, and failed genes.
+`fit@diagnostics` contains reference scores, raw and moderated batch contrasts,
+dispersion multipliers, mapping events, and timings.
+
+Fractional counts are audibly rounded by default. Use
+`fractional_counts = "error"` to reject them. `chunk_size` controls transport
+memory without changing results, and `verbosity = "quiet"` suppresses progress.

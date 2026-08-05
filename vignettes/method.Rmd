@@ -1,0 +1,72 @@
+---
+title: "Method"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Method}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+## Mean model and estimand
+
+With TMMwsp effective library size $L_j$, ComBat-refQL fits
+
+$$
+\log\mu_{gj}=\log L_j+X_j\beta_g+\gamma_{g,b(j)}.
+$$
+
+For reference batch $r$, the transport estimand is
+$\delta_{gb}=\gamma_{gb}-\gamma_{gr}$. The design must identify batch separately
+from supplied biological groups and covariates.
+
+## Hierarchical dispersion
+
+The negative-binomial dispersion is
+
+$$
+\phi_{gb}=\phi_{gr}\exp(d_b),\qquad d_r=0.
+$$
+
+edgeR supplies the gene baseline; an information-weighted NB likelihood
+estimates one reference-centred multiplier per batch. QL dispersion quantifies
+coefficient uncertainty and never enters NB count probabilities.
+
+## Evidence-adaptive EB moderation
+
+For raw QL contrast $\delta_g$, QL variance $s_g^2$, prior mean $m$, and prior
+variance $\tau^2$, the standard EB weight is
+
+$$w_g=\frac{\tau^2}{\tau^2+s_g^2}.$$
+
+ComBat-refQL then uses
+
+$$
+z_g=\frac{|\delta_g-m|}{\sqrt{s_g^2+\tau^2}},\qquad
+a_g=\frac{z_g^2}{1+z_g^2},
+$$
+
+$$
+w_g^*=w_g+(1-w_g)a_g,
+\qquad
+\delta_{g,\mathrm{final}}=w_g^*\delta_g+(1-w_g^*)m.
+$$
+
+Weak or uncertain effects retain stronger EB stabilization; strongly separated
+effects approach raw QL continuously. There is no threshold or tuning parameter.
+This is evidence-adaptive EB moderation, not an exact conjugate posterior mean.
+
+## Counterfactual transport
+
+For a source observation, the reference mean is
+$\mu_{gj}^{(r)}=\mu_{gj}\exp(-\delta_{g,\mathrm{final}})$. Given observed count
+$y$, the deterministic mid-P probability is
+
+$$
+q=F_b(y-1;\mu_{gj},\phi_{gb})+	frac12P_b(Y=y;\mu_{gj},\phi_{gb}),
+$$
+
+and $y^*=F_r^{-1}(q;\mu_{gj}^{(r)},\phi_{gr})$. Machine-safe clipping handles
+distribution tails. Reference observations bypass transport and remain exact.
+
+TMMwsp identifies a relative compositional scale. An unanchored absolute global
+RNA-output shift is not identifiable without external information.
