@@ -12,3 +12,5 @@ docs/
 validation/.cache/
 .Rhistory
 .Rproj.user/
+AGENTS.md
+CLAUDE.md
