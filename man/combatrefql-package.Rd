@@ -13,6 +13,7 @@ mid-P transport, and validated S7 diagnostics.
 \seealso{
 Useful links:
 \itemize{
+  \item \url{https://thokas99.github.io/ComBat-refQL/}
   \item \url{https://github.com/Thokas99/ComBat-refQL}
   \item Report bugs at \url{https://github.com/Thokas99/ComBat-refQL/issues}
 }
