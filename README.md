@@ -9,6 +9,17 @@ batch. It combines edgeR quasi-likelihood modelling, evidence-adaptive
 empirical-Bayes moderation, hierarchical batch-specific negative-binomial
 dispersion, and deterministic count transport.
 
+**[Read the documentation](https://thokas99.github.io/ComBat-refQL/)** for the
+getting-started guide, method details, validation results, and function
+reference.
+
+## Overview
+
+Use ComBat-refQL when RNA-seq count data contain a known batch effect and one
+observed batch is an appropriate target. The package returns integer counts,
+preserves the selected reference batch exactly, and keeps the original matrix
+dimensions and dimnames.
+
 ## Installation
 
 ```r
@@ -18,7 +29,7 @@ pak::pak("Thokas99/ComBat-refQL")
 
 ComBat-refQL requires R 4.3 or later and edgeR 4.2 or later.
 
-## Quick start
+## Usage
 
 ```r
 library(combatrefql)
@@ -34,8 +45,9 @@ corrected <- fit@counts
 summary(fit)
 ```
 
-Genes are rows and samples are columns. Corrected counts are finite,
-non-negative integer values with the original dimensions and dimnames.
+Genes are rows and samples are columns. `batch` and `group` must follow the
+sample order in `counts`; `group` represents the biological condition that
+should be retained during adjustment.
 
 ## Method
 
@@ -59,12 +71,17 @@ invariance. These are empirical diagnostics, not ground truth. See the
 [validation article](https://thokas99.github.io/ComBat-refQL/articles/validation.html)
 or its [reproducible summary](validation/README.md).
 
-## Documentation
+## Learn more
 
 - [Website](https://thokas99.github.io/ComBat-refQL/)
 - [Getting started](https://thokas99.github.io/ComBat-refQL/articles/getting-started.html)
 - [Method](https://thokas99.github.io/ComBat-refQL/articles/method.html)
 - [Function reference](https://thokas99.github.io/ComBat-refQL/reference/)
+
+## Getting help
+
+If you find a bug, please open a [GitHub issue](https://github.com/Thokas99/ComBat-refQL/issues)
+with a minimal reproducible example.
 
 ## Citation and attribution
 
