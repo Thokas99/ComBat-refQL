@@ -1,5 +1,9 @@
 # ComBat-refQL
 
+[![R-CMD-check](https://github.com/Thokas99/ComBat-refQL/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/Thokas99/ComBat-refQL/actions/workflows/R-CMD-check.yaml)
+[![pkgdown](https://github.com/Thokas99/ComBat-refQL/actions/workflows/pkgdown.yaml/badge.svg)](https://thokas99.github.io/ComBat-refQL/)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+
 ComBat-refQL adjusts RNA-seq count matrices toward one observed reference
 batch. It combines edgeR quasi-likelihood modelling, evidence-adaptive
 empirical-Bayes moderation, hierarchical batch-specific negative-binomial
@@ -49,22 +53,29 @@ the selected reference batch are preserved exactly.
 
 ## Validation
 
-The final implementation reproduces prespecified GFRN and NASA GeneLab
-alignment metrics with exact reference invariance. These are empirical
-diagnostics, not real-data ground truth. See [validation](vignettes/validation.Rmd).
+The real-data suite measures GFRN and NASA GeneLab alignment before and after
+adjustment, checks prespecified regression anchors, and requires exact reference
+invariance. These are empirical diagnostics, not ground truth. See the
+[validation article](https://thokas99.github.io/ComBat-refQL/articles/validation.html)
+or its [reproducible summary](validation/README.md).
 
 ## Documentation
 
-- [Getting started](vignettes/getting-started.Rmd)
-- [Method](vignettes/method.Rmd)
-- [Function reference](man/combat_ref_ql.Rd)
+- [Website](https://thokas99.github.io/ComBat-refQL/)
+- [Getting started](https://thokas99.github.io/ComBat-refQL/articles/getting-started.html)
+- [Method](https://thokas99.github.io/ComBat-refQL/articles/method.html)
+- [Function reference](https://thokas99.github.io/ComBat-refQL/reference/)
 
 ## Citation and attribution
 
 ComBat-refQL extends the reference-batch framework introduced by Xiaoyu Zhang
 in *Highly effective batch effect correction method for RNA-seq count data*
 ([doi:10.1016/j.csbj.2024.12.010](https://doi.org/10.1016/j.csbj.2024.12.010)).
-Run `citation("combatrefql")` and `citation("edgeR")` for citation metadata.
+Its count-scale context includes ComBat-seq
+([doi:10.1093/nargab/lqaa078](https://doi.org/10.1093/nargab/lqaa078)); the NASA
+validation follows the GeneLab benchmark
+([doi:10.3389/fspas.2023.1200132](https://doi.org/10.3389/fspas.2023.1200132)).
+Run `citation("combatrefql")` and `citation("edgeR")` for complete metadata.
 
 ## License
 

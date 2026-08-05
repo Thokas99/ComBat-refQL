@@ -7,9 +7,21 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-The final implementation is tested on the established GFRN signature dataset
-and NASA GeneLab liver collection. The scripts preserve the accepted sample
-definitions and exclude the GLDS-168 NASA stratum.
+## Datasets
+
+The suite reuses the count matrices and sample definitions from the archived
+ComBat-ref implementation. GFRN retains 47 samples across six biological
+signatures. The NASA collection combines mouse liver studies OSD/GLDS 47, 48,
+137, 173, 242, and 245; GLDS-168 is excluded to match the ComBat-ref analysis.
+Condition is the protected biological factor and study-mission is the batch.
+The source files are pinned to ComBat-ref commit
+`f0c6d3f313e9f1f29de2c8c8f12b98113443be55`.
+
+The NASA design follows Sanders et al. (2023), who identified mission and
+library preparation as major technical variables in seven combined GeneLab
+mouse-liver RNA-seq datasets ([doi:10.3389/fspas.2023.1200132](https://doi.org/10.3389/fspas.2023.1200132)).
+
+## Reproduce
 
 ```{r, eval=FALSE}
 system("Rscript validation/run_all.R")
@@ -17,16 +29,30 @@ metrics <- read.delim("validation/real_data_metrics.tsv")
 metrics
 ```
 
-| Dataset | Conditional batch R2 | Mean-alignment RMSE | Descriptive residual logCPM variance alignment |
+## Results
+
+| Dataset | Conditional batch R2, raw -> adjusted | Mean-alignment RMSE, raw -> adjusted | Residual variance alignment, raw -> adjusted |
 |---|---:|---:|---:|
-| GFRN | 0.03111 | 0.08128 | 0.17773 |
-| NASA GeneLab | 0.10079 | 0.19178 | 0.09293 |
+| GFRN | 0.54941 -> 0.03111 | 1.19145 -> 0.08128 | 0.27014 -> 0.17773 |
+| NASA GeneLab | 0.83903 -> 0.10079 | 1.38250 -> 0.19178 | 0.53028 -> 0.09293 |
 
 `validation/run_all.R` checks these regression anchors directly against the TSV
 output. Reference counts are exactly invariant in both datasets, and the TSV
 also records retained samples/genes, outcomes, reference batch, and
 transformation magnitude.
 
-These quantities describe empirical batch alignment. Residual logCPM variance
-alignment is not negative-binomial dispersion, and neither dataset supplies a
-uniform biological ground truth for all retained batches.
+For all three diagnostics, smaller values indicate closer cross-batch
+alignment after conditioning on biology. The table reports both raw and
+adjusted values; the adjusted values remain regression anchors. Residual logCPM
+variance alignment is descriptive, not negative-binomial dispersion. Neither
+dataset provides uniform biological ground truth, so the suite tests alignment
+and invariants rather than claiming biological superiority.
+
+## Related methods
+
+ComBat-refQL is derived from ComBat-ref
+([doi:10.1016/j.csbj.2024.12.010](https://doi.org/10.1016/j.csbj.2024.12.010)).
+ComBat-seq is the established negative-binomial count-scale comparator
+([doi:10.1093/nargab/lqaa078](https://doi.org/10.1093/nargab/lqaa078)). The
+current regression suite evaluates ComBat-refQL itself; it does not present a
+head-to-head benchmark.

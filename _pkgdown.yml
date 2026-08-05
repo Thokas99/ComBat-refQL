@@ -1,5 +1,12 @@
-url: https://github.com/Thokas99/ComBat-refQL
+url: https://thokas99.github.io/ComBat-refQL/
 destination: site
+
+repo:
+  url:
+    home: https://github.com/Thokas99/ComBat-refQL/
+    source: https://github.com/Thokas99/ComBat-refQL/blob/main/
+    issue: https://github.com/Thokas99/ComBat-refQL/issues/
+    user: https://github.com/
 
 template:
   bootstrap: 5
@@ -10,6 +17,7 @@ template:
     code_font: ui-monospace
 
 navbar:
+  bg: primary
   structure:
     left: [intro, reference, method, validation, news]
     right: [search, github]
@@ -41,3 +49,8 @@ articles:
     contents:
       - method
       - validation
+
+footer:
+  structure:
+    left: developed_by
+    right: built_with

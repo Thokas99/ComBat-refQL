@@ -1,3 +1,3 @@
-dataset	genes	samples	reference_batch	adjusted_genes	unchanged_genes	failed_genes	conditional_batch_r2	mean_alignment_rmse	descriptive_residual_logcpm_variance_alignment	transformation_magnitude	reference_invariant
-GFRN	14724	47	3	14720	0	4	0.031113987669605	0.0812774090241487	0.177731861480398	337.275256204041	TRUE
-NASA GeneLab	18112	35	GLDS_137_RR3	18112	0	0	0.100787198992518	0.191780795536507	0.0929263076015403	853.800448009337	TRUE
+dataset	genes	samples	reference_batch	adjusted_genes	unchanged_genes	failed_genes	raw_conditional_batch_r2	raw_mean_alignment_rmse	raw_descriptive_residual_logcpm_variance_alignment	conditional_batch_r2	mean_alignment_rmse	descriptive_residual_logcpm_variance_alignment	transformation_magnitude	reference_invariant
+GFRN	14724	47	3	14720	0	4	0.549412141231099	1.19145073704075	0.270144583313221	0.031113987669605	0.0812774090241487	0.177731861480398	337.275256204041	TRUE
+NASA GeneLab	18112	35	GLDS_137_RR3	18112	0	0	0.839033382724052	1.38249847271419	0.530275669153209	0.100787198992518	0.191780795536507	0.0929263076015403	853.800448009337	TRUE

@@ -53,12 +53,14 @@ run_validation <- function(counts, batch, group, dataset) {
   reference <- fit@specification$reference_batch
   outcomes <- stats::setNames(fit@diagnostics$outcomes$genes,
     fit@diagnostics$outcomes$outcome)
+  raw_metrics <- alignment_metrics(counts, batch, group)
   data.frame(
     dataset = dataset,
     genes = nrow(counts), samples = ncol(counts), reference_batch = reference,
     adjusted_genes = outcomes[["adjusted"]],
     unchanged_genes = outcomes[["unsupported"]],
     failed_genes = outcomes[["failed"]],
+    as.list(stats::setNames(raw_metrics, paste0("raw_", names(raw_metrics)))),
     as.list(alignment_metrics(fit@counts, batch, group)),
     transformation_magnitude = mean(abs(fit@counts - counts)),
     reference_invariant = identical(

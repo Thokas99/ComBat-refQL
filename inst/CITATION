@@ -16,3 +16,44 @@ bibentry(
   doi = "10.1016/j.csbj.2024.12.010",
   pmid = "39802213"
 )
+
+bibentry(
+  bibtype = "Article",
+  title = "ComBat-seq: batch effect adjustment for RNA-seq count data",
+  author = c(
+    person("Yuqing", "Zhang"),
+    person("Giovanni", "Parmigiani"),
+    person(c("W", "Evan"), "Johnson")
+  ),
+  journal = "NAR Genomics and Bioinformatics",
+  year = "2020",
+  volume = "2",
+  number = "3",
+  pages = "lqaa078",
+  doi = "10.1093/nargab/lqaa078",
+  pmid = "33015620"
+)
+
+bibentry(
+  bibtype = "Article",
+  title = "Batch effect correction methods for NASA GeneLab transcriptomic datasets",
+  author = c(
+    person("Lauren M.", "Sanders"),
+    person("Henry", "Chok"),
+    person("Francoise", "Samson"),
+    person("Ana U.", "Acuna"),
+    person("Sung-Ho L.", "Polo"),
+    person("Viktoriya", "Boyko"),
+    person("Yi-Chun", "Chen"),
+    person("Minh", "Dinh"),
+    person("Samrawit", "Gebre"),
+    person("Jonathan M.", "Galazka"),
+    person("Sylvain V.", "Costes"),
+    person("Afshin M.", "Saravia-Butler")
+  ),
+  journal = "Frontiers in Astronomy and Space Sciences",
+  year = "2023",
+  volume = "10",
+  pages = "1200132",
+  doi = "10.3389/fspas.2023.1200132"
+)
