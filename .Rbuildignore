@@ -8,3 +8,4 @@
 ^\.gitnexus$
 ^AGENTS\.md$
 ^CLAUDE\.md$
+^pkgdown$
