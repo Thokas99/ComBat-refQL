@@ -20,6 +20,9 @@ S7::method(print, CombatRefQLFit) <- function(x, ...) {
     cli::cli_text("{labels[[key]]}         {genes}{suffix}")
   }
   if (nrow(x@diagnostics$warnings)) cli::cli_text("  {nrow(x@diagnostics$warnings)} stored warnings")
+  confidence <- table(factor(x@diagnostics$correction_confidence$confidence_label,
+    levels = c("high", "moderate", "low", "failed")))
+  cli::cli_text("Confidence      {paste(names(confidence), confidence, sep = '=', collapse = ', ')}")
   cli::cli_text("")
   cli::cli_text("Runtime          {format(round(total, 1), nsmall = 1)} s")
   invisible(x)
@@ -31,6 +34,8 @@ S7::method(print, CombatRefQLSummary) <- function(x, ...) {
   cli::cli_text("  Samples:          {design$samples}"); cli::cli_text("  Coefficients:     {design$coefficients}")
   cli::cli_text("  Rank:             {design$rank}"); cli::cli_text("  Residual df:      {design$residual_df}")
   cli::cli_text("  Condition number: {format(round(design$condition_number, 2), nsmall = 2)}")
+  cli::cli_text("  Maximum batch association: {format(round(x@overview$maximum_entanglement, 3), nsmall = 3)}")
+  if (x@overview$low_information_batches) cli::cli_alert_warning("{x@overview$low_information_batches} low-information batch(es)")
   cli::cli_h2("Reference"); cli::cli_text("  batch  samples  score  selected")
   for (i in seq_len(nrow(x@batches))) cli::cli_text("  {x@batches$batch[i]}  {x@batches$samples[i]}  {format(signif(x@batches$reference_score[i], 4))}  {if (x@batches$selected[i]) 'yes' else 'no'}")
   if (x@specification$reference_selection == "automatic") {

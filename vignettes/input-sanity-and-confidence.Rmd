@@ -1,0 +1,121 @@
+---
+title: "Input sanity and correction confidence"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Input sanity and correction confidence}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+## Input expectations
+
+ComBat-refQL accepts raw bulk RNA-seq counts with genes in rows and samples in
+columns. Counts must be finite, non-negative, and identified by unique gene and
+sample names. Each sample belongs to exactly one discrete batch. `group` and
+sample-by-covariate columns are optional preserved biology.
+
+```{r, eval=FALSE}
+fit <- combat_ref_ql(counts, batch) # zero-covariate workflow
+fit <- combat_ref_ql(counts, batch, group, covariates)
+```
+
+The package errors on invalid counts or identifiers, metadata misalignment,
+fewer than two batches, invalid references, normalized/transformed expression
+when confidently recognizable, exact rank deficiency, and zero residual degrees
+of freedom. Constant terms and unused factor levels are recorded in
+`fit@diagnostics$input`; constant terms are omitted because they preserve no
+sample-varying information. Library-size outliers are flagged relative to the
+median (below one quarter or above four times it), not by a universal count
+cutoff. A batch-size ratio of at least four is reported as highly unequal.
+
+## Batch replication
+
+Singleton source batches are accepted when the global design remains
+identifiable. Their source-batch dispersion uses the existing shared/reference
+fallback and is not independently estimable. Singletons are never eligible for
+automatic reference selection and their corrections are labelled low
+confidence. Two-sample sources are accepted but labelled limited-information;
+their confidence cannot be high. Larger batches are assessed with the existing
+weighted residual-information diagnostic rather than a sample-count rule.
+
+An explicitly selected singleton reference generally has zero independently
+estimable reference dispersion information and produces an actionable error;
+choose a replicated reference.
+
+## Biology and batch
+
+Exact confounding is decided only by matrix rank. The additional entanglement
+score is descriptive: for each non-batch design column, ComBat-refQL reports the
+fraction of its centered sum of squares explained by the batch-design subspace,
+then takes the maximum across columns belonging to a term. Scores are bounded in
+`[0,1]`. A maximum at or above `0.8` produces a warning; this conservative value
+is a diagnostic category, not a statistical boundary.
+
+```{r, eval=FALSE}
+# balanced
+batch <- factor(rep(c("A", "B"), each = 6))
+group <- factor(rep(c("control", "treated"), 6))
+combat_ref_ql(counts, batch, group)
+
+# partial association: proceeds and is recorded
+group <- factor(c("control", "control", "treated", "treated", "control", "treated",
+                  "control", "treated", "treated", "control", "treated", "control"))
+combat_ref_ql(counts, batch, group)
+
+# strong but not exact association: proceeds with a warning
+batch <- factor(rep(c("A", "B"), each = 24))
+group <- factor(c(rep("control", 23), "treated", "control", rep("treated", 23)))
+combat_ref_ql(counts48, batch, group)
+
+# exact aliasing: informative combatrefql_design_error
+combat_ref_ql(counts, batch, group = batch)
+```
+
+With exact confounding the package cannot determine which inseparable component
+is biology and which is batch. It therefore does not silently drop either term.
+Locally non-estimable biological terms used only during automatic reference
+scoring are recorded in the reference table together with fallbacks, scores,
+runner-up, and score margin.
+
+## Correction confidence
+
+Confidence is reported for each `gene x source_batch -> reference_batch`
+correction. It reuses the fitted QL standard error `s`, weighted effective
+information `I`, dispersion estimability, mapping validity, and source batch
+size. No model is refitted.
+
+The exact diagnostic reliability/support index is
+
+```
+min(1 / (1 + s), I / (1 + I), batch_cap, dispersion_cap)
+```
+
+where `batch_cap` is `0.25`, `0.50`, or `1` for source sizes 1, 2, or at least
+3, and `dispersion_cap` is `1` when independently estimable and `0.25` when the
+existing fallback is used. A mapping failure sets the score to zero and the
+label to `failed`. Otherwise labels are `high` for scores at least `0.75`,
+`moderate` for scores at least `0.50`, and `low` below `0.50`.
+
+The score is a deterministic reliability/support index, not a posterior
+probability, p-value, or test of whether a batch effect exists. Raw effects,
+standard and adaptive EB weights, and posterior effects remain visible in the
+same row. Adaptive weight describes how the estimate combines gene evidence
+and the fitted prior; it is deliberately not treated as evidence that the
+correction is reliable, so a small estimated batch effect is not automatically
+penalized.
+
+`fit@gene_status` conservatively uses the minimum score and worst label across
+all source corrections for each gene. Full detail remains available:
+
+```{r, eval=FALSE}
+fit@gene_status
+fit@diagnostics$correction_confidence
+fit@diagnostics$batch_quality
+fit@diagnostics$input
+fit@diagnostics$design_entanglement
+summary(fit)
+```
+
+These diagnostics expose limited support; they do not remove the fundamental
+non-identifiability of exactly confounded designs or create replication where
+none exists.

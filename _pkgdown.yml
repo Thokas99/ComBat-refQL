@@ -1,4 +1,10 @@
 url: https://thokas99.github.io/ComBat-refQL/
 template:
   bootstrap: 5
-
+articles:
+- title: Guides
+  contents:
+  - getting-started
+  - input-sanity-and-confidence
+  - method
+  - validation

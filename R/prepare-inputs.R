@@ -46,14 +46,39 @@ prepare_inputs <- function(counts, batch, group, covariates, reference,
   if (anyNA(batch) || any(batch == "")) input_error("{.arg batch} contains missing or empty values.")
   batch <- factor(batch)
   if (nlevels(batch) < 2L) input_error("{.arg batch} must contain at least two batches.")
-  if (any(table(batch) < 2L)) input_error("Every batch must contain at least two samples.")
+  batch_sizes <- table(batch)
   group <- align_vector(group, counts, "group", required = FALSE)
   if (!is.null(group)) {
     if (anyNA(group) || any(group == "")) input_error("{.arg group} contains missing or empty values.")
     group <- factor(group)
-    if (nlevels(group) == 1L) group <- NULL
   }
   covariates <- align_covariates(covariates, counts)
+  unused <- character()
+  constant <- character()
+  if (!is.null(group)) {
+    absent <- setdiff(levels(group), unique(as.character(group)))
+    unused <- c(unused, paste0("group:", absent))
+    group <- droplevels(group)
+    if (length(unique(group)) < 2L) {
+      constant <- c(constant, "group")
+      group <- NULL
+    }
+  }
+  if (!is.null(covariates)) {
+    constant_covariates <- names(covariates)[vapply(covariates,
+      function(x) length(unique(x)) < 2L, logical(1))]
+    constant <- c(constant, constant_covariates)
+    covariates <- covariates[setdiff(names(covariates), constant_covariates)]
+    if (!ncol(covariates)) covariates <- NULL
+  }
+  if (!is.null(covariates)) for (name in names(covariates)) {
+    if (is.character(covariates[[name]])) covariates[[name]] <- factor(covariates[[name]])
+    if (is.factor(covariates[[name]])) {
+      absent <- setdiff(levels(covariates[[name]]), unique(as.character(covariates[[name]])))
+      unused <- c(unused, paste0(name, ":", absent))
+      covariates[[name]] <- droplevels(covariates[[name]])
+    }
+  }
   if (!is.null(reference)) {
     if (length(reference) != 1L || is.na(reference) || !as.character(reference) %in% levels(batch)) {
       abort_combatrefql("combatrefql_reference_error",
@@ -63,8 +88,21 @@ prepare_inputs <- function(counts, batch, group, covariates, reference,
     }
     reference <- as.character(reference)
   }
+  med_library <- stats::median(library_sizes)
+  library_ratio <- library_sizes / med_library
+  input <- data.frame(
+    genes = nrow(counts), samples = ncol(counts), batches = nlevels(batch),
+    batch_sizes = paste(names(batch_sizes), as.integer(batch_sizes), sep = "=", collapse = ", "),
+    batch_size_ratio = max(batch_sizes) / min(batch_sizes),
+    highly_unequal_batches = max(batch_sizes) / min(batch_sizes) >= 4,
+    library_size_min_ratio = min(library_ratio),
+    library_size_max_ratio = max(library_ratio),
+    library_size_outliers = sum(library_ratio < 0.25 | library_ratio > 4),
+    unused_factor_levels = paste(unused, collapse = ","),
+    constant_terms_dropped = paste(constant, collapse = ","),
+    stringsAsFactors = FALSE)
   list(counts = counts, batch = batch, group = group, covariates = covariates,
-       reference = reference, input_actions = action)
+       reference = reference, input_actions = action, input = input)
 }
 
 validate_ids <- function(x, type, location) {

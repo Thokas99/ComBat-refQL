@@ -21,9 +21,11 @@ combat_ref_ql(
 
 \item{batch}{Sample batch vector, optionally named for automatic reordering.}
 
-\item{group}{Optional biological group vector.}
+\item{group}{Optional biological group vector to preserve. Exact batch/group
+aliasing is an error; strong association is reported as a warning.}
 
-\item{covariates}{Optional sample-by-covariate data frame or matrix.}
+\item{covariates}{Optional sample-by-covariate data frame or matrix. Constant
+columns are recorded and omitted; redundant or aliased terms are errors.}
 
 \item{reference}{Optional reference batch. When \code{NULL}, the minimum-dispersion
 batch is selected from biologically adjusted within-batch QL fits.}
@@ -37,7 +39,8 @@ batch is selected from biologically adjusted within-batch QL fits.}
 \item{verbosity}{User output level.}
 }
 \value{
-A validated \link{CombatRefQLFit} object.
+A validated \link{CombatRefQLFit} object with adjusted counts and structured
+input, batch-quality, and correction-confidence diagnostics.
 }
 \description{
 Fits model-based reference-counterfactual means with edgeR v4, moderates QL

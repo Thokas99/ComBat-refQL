@@ -4,6 +4,17 @@ build_combatrefql_result <- function(prepared, dge, design, selected, fit,
                                      chunk_size) {
   gene_status <- make_gene_status(prepared$counts, prepared$batch, keep,
     transported$mapping_valid)
+  confidence <- make_correction_confidence(shrinkage, dispersion, transported,
+    prepared$batch, selected$reference)
+  gene_confidence <- lapply(split(confidence, confidence$gene), function(x) {
+    worst <- which.min(x$confidence_score)
+    c(score = x$confidence_score[worst], label = x$confidence_label[worst])
+  })
+  gene_status$confidence_score <- vapply(gene_status$gene, function(gene)
+    if (is.null(gene_confidence[[gene]])) NA_real_ else as.numeric(gene_confidence[[gene]]["score"]), numeric(1))
+  gene_status$confidence_label <- vapply(gene_status$gene, function(gene)
+    if (is.null(gene_confidence[[gene]])) NA_character_ else gene_confidence[[gene]]["label"], character(1))
+  batch_quality <- make_batch_quality(selected, dispersion, prepared$batch)
   mapping_warnings <- if (nrow(transported$failures)) data.frame(
     stage = "mapping", class = "combatrefql_mapping_error",
     message = sprintf("NB transport failed for %s genes; complete original rows were retained.",
@@ -41,14 +52,15 @@ build_combatrefql_result <- function(prepared, dge, design, selected, fit,
       residual_df = design$residual_df,
       condition_number = design$condition_number),
     design_matrix = design$matrix)
+  all_warnings <- rbind(design$warnings, mapping_warnings)
   diagnostics <- build_diagnostics(selected, transported, timings,
-    prepared$input_actions, mapping_warnings, gene_status, ql, shrinkage,
-    dispersion)
+    prepared, design, all_warnings, gene_status, ql, shrinkage,
+    dispersion, confidence, batch_quality)
   list(
     result = CombatRefQLFit(counts = transported$counts,
       specification = specification, samples = samples,
       gene_status = gene_status, diagnostics = diagnostics, call = call,
       model = model),
-    warnings = mapping_warnings
+    warnings = all_warnings
   )
 }

@@ -6,15 +6,18 @@
 #'
 #' @param counts Numeric raw-count matrix with genes in rows and samples in columns.
 #' @param batch Sample batch vector, optionally named for automatic reordering.
-#' @param group Optional biological group vector.
-#' @param covariates Optional sample-by-covariate data frame or matrix.
+#' @param group Optional biological group vector to preserve. Exact batch/group
+#'   aliasing is an error; strong association is reported as a warning.
+#' @param covariates Optional sample-by-covariate data frame or matrix. Constant
+#'   columns are recorded and omitted; redundant or aliased terms are errors.
 #' @param reference Optional reference batch. When `NULL`, the minimum-dispersion
 #'   batch is selected from biologically adjusted within-batch QL fits.
 #' @param normalization edgeR library normalization method. Only `"TMMwsp"` is supported.
 #' @param fractional_counts Round with an audit record, or reject fractional values.
 #' @param chunk_size Positive number of genes transported per chunk.
 #' @param verbosity User output level.
-#' @return A validated [CombatRefQLFit] object.
+#' @return A validated [CombatRefQLFit] object with adjusted counts and structured
+#'   input, batch-quality, and correction-confidence diagnostics.
 #' @examples
 #' set.seed(1)
 #' batch <- factor(rep(c("reference", "study"), each = 6))
@@ -59,6 +62,9 @@ combat_ref_ql <- function(counts, batch, group = NULL, covariates = NULL,
   timings <- rbind(timings, timing_row("normalization", start))
 
   design <- build_design(prepared$batch, prepared$group, prepared$covariates)
+  if (nrow(design$warnings)) warn_combatrefql("combatrefql_design_warning",
+    design$warnings$message[[1L]], stage = "design",
+    maximum_entanglement = design$maximum_entanglement)
   keep <- assess_support(prepared$counts, prepared$batch)
   start <- proc.time()[["elapsed"]]
   selected <- select_reference(dge, prepared$batch, prepared$group,

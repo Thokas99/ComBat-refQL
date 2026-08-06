@@ -20,8 +20,36 @@ build_design <- function(batch, group = NULL, covariates = NULL) {
       "*" = "Remove confounded or redundant terms, or add replicates.",
       stage = "design", rank = rank, residual_df = residual_df)
   }
+  batch_matrix <- stats::model.matrix(~ 0 + batch)
+  assignment <- attr(design, "assign")
+  labels <- attr(stats::terms(stats::as.formula(paste("~", rhs))), "term.labels")
+  biology <- which(assignment > 1L)
+  entanglement <- if (!length(biology)) data.frame(
+    term = character(), columns = character(), batch_association = numeric(),
+    status = character(), message = character()) else do.call(rbind,
+    lapply(split(biology, assignment[biology]), function(index) {
+      scores <- vapply(index, function(j) {
+        y <- design[, j]
+        fitted <- batch_matrix %*% stats::lm.fit(batch_matrix, y)$coefficients
+        denominator <- sum((y - mean(y))^2)
+        if (denominator == 0) 1 else max(0, min(1, 1 - sum((y - fitted)^2) / denominator))
+      }, numeric(1))
+      score <- max(scores)
+      term <- labels[assignment[index[1L]]]
+      strong <- score >= 0.8
+      data.frame(term = term, columns = paste(colnames(design)[index], collapse = ","),
+        batch_association = score, status = if (strong) "strong" else "ordinary",
+        message = if (strong) sprintf("%s is strongly associated with batch (diagnostic R2 = %.3f).", term, score) else NA_character_,
+        stringsAsFactors = FALSE)
+    }))
+  maximum <- if (nrow(entanglement)) max(entanglement$batch_association) else 0
+  warnings <- if (maximum >= 0.8) data.frame(stage = "design",
+    class = "combatrefql_design_warning",
+    message = "Preserved biology/covariates are strongly associated with batch; corrections may be weakly identified.",
+    stringsAsFactors = FALSE) else empty_warnings()
   list(matrix = design, rank = rank, residual_df = residual_df,
-       condition_number = kappa(design))
+       condition_number = kappa(design), entanglement = entanglement,
+       maximum_entanglement = maximum, warnings = warnings)
 }
 
 batch_contrast <- function(design, source, reference) {

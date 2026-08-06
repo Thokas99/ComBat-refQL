@@ -33,15 +33,16 @@ CombatRefQLFit <- S7::new_class("CombatRefQLFit", properties = list(
     if (!identical(colnames(counts), self@samples$sample)) errors <- c(errors, "sample identifiers are not aligned")
     if (!identical(rownames(counts), self@gene_status$gene)) errors <- c(errors, "gene identifiers are not aligned")
   }
-  if (!all(c("gene", "status", "reason", "adjusted", "zero_batches", "fit_valid", "mapping_valid") %in% names(self@gene_status))) errors <- c(errors, "@gene_status is missing required columns")
+  if (!all(c("gene", "status", "reason", "adjusted", "zero_batches", "fit_valid", "mapping_valid", "confidence_score", "confidence_label") %in% names(self@gene_status))) errors <- c(errors, "@gene_status is missing required columns")
   if (!all(c("batches", "mapping", "mapping_failures", "timing",
     "input_actions", "warnings", "outcomes", "ql", "batch_contrasts",
-    "dispersion") %in% names(self@diagnostics)))
+    "dispersion", "input", "design_entanglement", "batch_quality",
+    "correction_confidence") %in% names(self@diagnostics)))
     errors <- c(errors, "@diagnostics is missing required tables")
   batch_columns <- c("batch", "samples", "reference_score", "selected",
     "selection_method", "local_formula", "local_columns", "dropped_columns",
     "missing_levels", "fallback", "fallback_reason", "residual_df",
-    "effective_residual_information", "second_best", "score_margin")
+    "effective_residual_information", "reference_eligible", "second_best", "score_margin")
   if (is.data.frame(self@diagnostics$batches) &&
       !all(batch_columns %in% names(self@diagnostics$batches)))
     errors <- c(errors, "reference diagnostics are missing required columns")

@@ -15,7 +15,7 @@ S7::method(summary, CombatRefQLFit) <- function(object, ...) {
       total_precision = sum(x$precision_weight), status = x$status[1L],
       converged = x$converged[1L], iterations = x$iterations[1L])))
   CombatRefQLSummary(
-    overview = data.frame(genes = nrow(object@counts), samples = ncol(object@counts), batches = length(unique(object@samples$batch)), groups = length(unique(stats::na.omit(object@samples$group))), warnings = nrow(object@diagnostics$warnings)),
+    overview = data.frame(genes = nrow(object@counts), samples = ncol(object@counts), batches = length(unique(object@samples$batch)), groups = length(unique(stats::na.omit(object@samples$group))), warnings = nrow(object@diagnostics$warnings), low_information_batches = sum(object@diagnostics$batch_quality$status != "ok"), maximum_entanglement = object@diagnostics$input$maximum_entanglement),
     specification = object@specification, design = object@model$design,
     batches = object@diagnostics$batches, gene_outcomes = object@diagnostics$outcomes,
     ql = object@diagnostics$ql, shrinkage = shrinkage,

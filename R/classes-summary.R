@@ -38,7 +38,7 @@ CombatRefQLSummary <- S7::new_class("CombatRefQLSummary", properties = list(
   batch_columns <- c("batch", "samples", "reference_score", "selected",
     "selection_method", "local_formula", "local_columns", "dropped_columns",
     "missing_levels", "fallback", "fallback_reason", "residual_df",
-    "effective_residual_information", "second_best", "score_margin")
+    "effective_residual_information", "reference_eligible", "second_best", "score_margin")
   if (!all(batch_columns %in% names(self@batches))) errors <- c(errors, "@batches is missing required columns")
   if (!all(c("outcome", "genes", "proportion") %in% names(self@gene_outcomes))) errors <- c(errors, "@gene_outcomes is missing required columns")
   if (!all(c("source_batch", "prior_mean", "prior_variance",

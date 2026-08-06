@@ -73,6 +73,7 @@ select_reference <- function(dge, batch, group = NULL, covariates = NULL,
         fallback_reason = NA_character_,
         residual_df = NA_integer_,
         effective_residual_information = NA_real_,
+        reference_eligible = as.integer(table(batch)[candidates]) > 1L,
         second_best = FALSE,
         score_margin = NA_real_,
         stringsAsFactors = FALSE
@@ -88,7 +89,8 @@ select_reference <- function(dge, batch, group = NULL, covariates = NULL,
     )
     local <- dge[, idx, keep.lib.sizes = TRUE]
     keep <- rowSums(local$counts) > 0
-    fit <- if (sum(keep) < 2L) NULL else try(
+    eligible <- sum(idx) > 1L
+    fit <- if (!eligible || sum(keep) < 2L) NULL else try(
       edgeR::glmQLFit(local[keep, , keep.lib.sizes = TRUE], local_design$matrix,
         dispersion = NULL, robust = TRUE, legacy = FALSE), silent = TRUE)
     score <- if (is.null(fit) || inherits(fit, "try-error") ||
@@ -104,13 +106,14 @@ select_reference <- function(dge, batch, group = NULL, covariates = NULL,
       fallback_reason = local_design$fallback_reason,
       residual_df = local_design$residual_df,
       effective_residual_information = local_design$residual_df,
+      reference_eligible = eligible,
       stringsAsFactors = FALSE
     )
   })
   data <- do.call(rbind, rows)
   if (all(!is.finite(data$reference_score))) {
     abort_combatrefql("combatrefql_reference_error",
-      "No batch could be scored as a reference.",
+      "No replicated batch could be scored as a reference.",
       "*" = "Ensure each batch has replicated, non-zero raw counts.", stage = "reference")
   }
   selected <- data$batch[which.min(data$reference_score)]
@@ -127,6 +130,6 @@ select_reference <- function(dge, batch, group = NULL, covariates = NULL,
   data <- data[c("batch", "samples", "reference_score", "selected",
     "selection_method", "local_formula", "local_columns", "dropped_columns",
     "missing_levels", "fallback", "fallback_reason", "residual_df",
-    "effective_residual_information", "second_best", "score_margin")]
+    "effective_residual_information", "reference_eligible", "second_best", "score_margin")]
   list(reference = selected, batches = data)
 }

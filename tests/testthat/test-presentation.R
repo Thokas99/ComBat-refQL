@@ -1,7 +1,7 @@
 test_that("startup banner is versioned and suppressible", {
   attach <- getFromNamespace(".onAttach", "combatrefql")
   expect_message(attach(.libPaths()[1L], "combatrefql"),
-    "ComBat-refQL 0.0.1", fixed = TRUE)
+    "ComBat-refQL 0.0.2", fixed = TRUE)
   expect_silent(suppressPackageStartupMessages(
     attach(.libPaths()[1L], "combatrefql")))
 })

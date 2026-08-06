@@ -11,3 +11,8 @@ abort_combatrefql <- function(class, message, ..., stage) {
 input_error <- function(message, ..., stage = "input") {
   abort_combatrefql("combatrefql_input_error", message, ..., stage = stage)
 }
+
+warn_combatrefql <- function(class, message, ..., stage) {
+  cli::cli_warn(c("!" = message, "i" = sprintf("Stage: %s.", stage)),
+    class = c(class, "combatrefql_warning"), ...)
+}

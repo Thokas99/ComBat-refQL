@@ -75,6 +75,7 @@ or its [reproducible summary](validation/README.md).
 
 - [Website](https://thokas99.github.io/ComBat-refQL/)
 - [Getting started](https://thokas99.github.io/ComBat-refQL/articles/getting-started.html)
+- [Input sanity and correction confidence](https://thokas99.github.io/ComBat-refQL/articles/input-sanity-and-confidence.html)
 - [Method](https://thokas99.github.io/ComBat-refQL/articles/method.html)
 - [Function reference](https://thokas99.github.io/ComBat-refQL/reference/)
 
@@ -85,13 +86,19 @@ with a minimal reproducible example.
 
 ## Citation and attribution
 
-ComBat-refQL extends the reference-batch framework introduced by Xiaoyu Zhang
-in *Highly effective batch effect correction method for RNA-seq count data*
-([doi:10.1016/j.csbj.2024.12.010](https://doi.org/10.1016/j.csbj.2024.12.010)).
-Its count-scale context includes ComBat-seq
-([doi:10.1093/nargab/lqaa078](https://doi.org/10.1093/nargab/lqaa078)); the NASA
-validation follows the GeneLab benchmark
-([doi:10.3389/fspas.2023.1200132](https://doi.org/10.3389/fspas.2023.1200132)).
+ComBat-refQL builds on these methods and validation resources:
+
+- **ComBat-ref** — Xiaoyu Zhang, *Highly effective batch effect correction
+  method for RNA-seq count data*: [article](https://doi.org/10.1016/j.csbj.2024.12.010)
+  · [source repository](https://github.com/xiaoyu12/Combat-ref)
+- **ComBat-seq** — Yuqing Zhang, Giovanni Parmigiani, and W. Evan Johnson,
+  *ComBat-seq: batch effect adjustment for RNA-seq count data*:
+  [article](https://doi.org/10.1093/nargab/lqaa078)
+  · [source repository](https://github.com/zhangyuqing/ComBat-seq)
+- **NASA GeneLab validation benchmark** — Sanders et al., *Batch effect
+  correction methods for NASA GeneLab transcriptomic datasets*:
+  [article](https://doi.org/10.3389/fspas.2023.1200132)
+
 Run `citation("combatrefql")` and `citation("edgeR")` for complete metadata.
 
 ## License

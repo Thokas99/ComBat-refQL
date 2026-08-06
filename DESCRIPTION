@@ -1,6 +1,6 @@
 Package: combatrefql
 Title: ComBat-refQL Reference-Batch Adjustment for RNA-Seq Counts
-Version: 0.0.1
+Version: 0.0.2
 Authors@R: c(
     person(
       "Xiaoyu",
