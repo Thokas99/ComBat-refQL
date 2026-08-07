@@ -1,8 +1,48 @@
 url: https://thokas99.github.io/ComBat-refQL/
+
 template:
   bootstrap: 5
+  bslib:
+    bootswatch: flatly
+  light-switch: true
+
+navbar:
+  structure:
+    left: [home, get_started, reference, articles]
+    right: [github, lightswitch, search]
+  components:
+    get_started:
+      text: Get started
+      href: articles/getting-started.html
+    reference:
+      text: Reference
+      href: reference/index.html
+    articles:
+      text: Articles
+      menu:
+      - text: Input sanity & confidence
+        href: articles/input-sanity-and-confidence.html
+      - text: Method
+        href: articles/method.html
+      - text: Validation
+        href: articles/validation.html
+    github:
+      icon: fab fa-github
+      href: https://github.com/Thokas99/ComBat-refQL
+      aria-label: GitHub repository
+
+reference:
+- title: Batch adjustment
+  contents:
+  - combat_ref_ql
+- title: Result objects
+  contents:
+  - CombatRefQLFit
+  - CombatRefQLSummary
+
 articles:
 - title: Guides
+  navbar: ~
   contents:
   - getting-started
   - input-sanity-and-confidence

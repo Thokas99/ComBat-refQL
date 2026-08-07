@@ -39,6 +39,25 @@ counts remain unchanged.
 `fit@diagnostics` contains reference scores, raw and moderated batch contrasts,
 dispersion multipliers, mapping events, and timings.
 
+## Downstream analysis
+
+For differential-expression inference, use the original counts and include
+batch directly in the statistical design. This retains the observed count
+observations and carries batch structure through the inferential model used by
+edgeR, limma-voom, DESeq2, or an equivalent workflow.
+
+Adjusted counts are useful for analyses that operate directly on an expression
+matrix and benefit from a harmonized feature space, including PCA, clustering,
+heatmaps, visualization, machine learning, and integrative analysis.
+
+```{r, eval=FALSE}
+log_cpm <- edgeR::cpm(fit@counts, log = TRUE, prior.count = 2)
+pca <- prcomp(t(log_cpm), scale. = FALSE)
+```
+
+For predictive modelling, perform data-dependent preprocessing within the
+training workflow and apply the learned procedure to held-out samples.
+
 Fractional counts are audibly rounded by default. Use
 `fractional_counts = "error"` to reject them. Set `verbose = FALSE` to suppress
 fitting messages. `chunk_size` is an advanced transport-memory option that does

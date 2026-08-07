@@ -1,10 +1,25 @@
 # combatrefql 0.0.3
 
-- Simplified `combat_ref_ql()` by internalizing the fixed TMMwsp normalization
-  and replacing multi-level `verbosity` with logical `verbose`.
-- Streamlined fitting output with concise `cli` progress, retained total
-  runtime and important input actions, and simplified fit and summary printing.
-- Refreshed documentation, vignettes, tests, and pkgdown for the public API.
+## User interface
+
+- Simplified the `combat_ref_ql()` interface and moved fixed implementation
+  choices behind the public API.
+- Replaced multi-level verbosity with logical `verbose`.
+- Streamlined console reporting with `cli`, including concise progress,
+  outcomes, and total runtime.
+
+## Diagnostics
+
+- Refined fit and summary presentation around reference selection, gene
+  outcomes, correction confidence, and interpretable batch diagnostics.
+- Retained detailed diagnostics and timing information inside fitted objects
+  for reproducibility and inspection.
+
+## Documentation
+
+- Expanded downstream-analysis guidance.
+- Redesigned the README and pkgdown website.
+- Refreshed examples, vignettes, documentation, and release metadata.
 
 # combatrefql 0.0.2
 
