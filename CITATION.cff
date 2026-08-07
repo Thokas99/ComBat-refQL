@@ -1,0 +1,35 @@
+cff-version: 1.2.0
+message: "If you use ComBat-refQL, please cite it as below."
+title: "ComBat-refQL"
+type: software
+version: "0.0.3"
+date-released: 2026-08-07
+license: MIT
+repository-code: "https://github.com/Thokas99/ComBat-refQL"
+url: "https://thokas99.github.io/ComBat-refQL/"
+abstract: >-
+  ComBat-refQL performs reference-batch adjustment of bulk RNA-seq count data
+  using quasi-likelihood modelling, empirical-Bayes moderation, hierarchical
+  dispersion modelling, and deterministic count transport.
+authors:
+  - family-names: Sirchi
+    given-names: Thomas
+    email: "thomasirchi@gmail.com"
+  - family-names: Zhang
+    given-names: Xiaoyu
+    affiliation: "ComBat-ref method and original implementation"
+keywords:
+  - bulk RNA-seq
+  - batch correction
+  - reference batch
+  - quasi-likelihood
+  - empirical Bayes
+  - count data
+references:
+  - type: article
+    authors:
+      - family-names: Zhang
+        given-names: Xiaoyu
+    title: "Highly effective batch effect correction method for RNA-seq count data"
+    doi: "10.1016/j.csbj.2024.12.010"
+    url: "https://github.com/xiaoyu12/Combat-ref"
