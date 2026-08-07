@@ -12,6 +12,7 @@
 #' @param input_actions Audited input transformations.
 #' @param warnings Stored warning table.
 #' @param timings Stage timing table.
+#' @param confidence Correction-confidence counts.
 #' @examples
 #' # Summary objects are returned by summary(fit).
 #' # diagnostic <- summary(fit)
@@ -24,14 +25,15 @@ CombatRefQLSummary <- S7::new_class("CombatRefQLSummary", properties = list(
   gene_outcomes = S7::class_data.frame, ql = S7::class_data.frame,
   shrinkage = S7::class_data.frame, dispersion = S7::class_data.frame,
   input_actions = S7::class_data.frame, warnings = S7::class_data.frame,
-  timings = S7::class_data.frame
+  timings = S7::class_data.frame, confidence = S7::class_list
 ), constructor = function(overview, specification, design, batches, gene_outcomes,
                           ql, shrinkage, dispersion, input_actions, warnings,
-                          timings) {
+                          timings, confidence) {
   S7::new_object(S7::S7_object(), overview = overview, specification = specification,
     design = design, batches = batches, gene_outcomes = gene_outcomes, ql = ql,
     shrinkage = shrinkage, dispersion = dispersion,
-    input_actions = input_actions, warnings = warnings, timings = timings)
+    input_actions = input_actions, warnings = warnings, timings = timings,
+    confidence = confidence)
 }, validator = function(self) {
   errors <- character()
   if (nrow(self@overview) != 1L) errors <- c(errors, "@overview must have one row")

@@ -54,7 +54,7 @@ build_local_reference_design <- function(n, group = NULL, covariates = NULL) {
 }
 
 select_reference <- function(dge, batch, group = NULL, covariates = NULL,
-                             explicit = NULL, progress = function(...) NULL) {
+                             explicit = NULL) {
   if (!is.null(explicit)) {
     candidates <- levels(batch)
     return(list(
@@ -81,7 +81,6 @@ select_reference <- function(dge, batch, group = NULL, covariates = NULL,
     ))
   }
   rows <- lapply(levels(batch), function(candidate) {
-    progress(candidate)
     idx <- batch == candidate
     local_design <- build_local_reference_design(sum(idx),
       if (is.null(group)) NULL else group[idx],

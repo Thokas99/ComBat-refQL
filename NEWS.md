@@ -1,3 +1,11 @@
+# combatrefql 0.0.3
+
+- Simplified `combat_ref_ql()` by internalizing the fixed TMMwsp normalization
+  and replacing multi-level `verbosity` with logical `verbose`.
+- Streamlined fitting output with concise `cli` progress, retained total
+  runtime and important input actions, and simplified fit and summary printing.
+- Refreshed documentation, vignettes, tests, and pkgdown for the public API.
+
 # combatrefql 0.0.2
 
 - Added structured input, design-entanglement, batch-quality, per-correction,

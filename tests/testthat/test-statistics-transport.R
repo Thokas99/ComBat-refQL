@@ -1,6 +1,6 @@
 test_that("v4 QL fit keeps NB and QL dispersion strictly separate", {
   z <- combatrefql_test_fixtures()[[1]]
-  fit <- combat_ref_ql(z$counts,z$batch,z$group,reference="1",verbosity="quiet")
+  fit <- combat_ref_ql(z$counts,z$batch,z$group,reference="1",verbose=FALSE)
   expect_true(isTRUE(fit@diagnostics$ql$robust) && !fit@diagnostics$ql$legacy)
   expect_length(fit@model$nb_dispersion, sum(fit@gene_status$fit_valid))
   expect_length(fit@model$posterior_ql_dispersion, sum(fit@gene_status$fit_valid))
@@ -24,8 +24,8 @@ test_that("mid-P transport is deterministic, model consistent, and double safe",
 
 test_that("chunking is equivalent and unsupported genes remain unchanged", {
   z <- combatrefql_test_fixtures()[[1]]
-  a <- combat_ref_ql(z$counts,z$batch,z$group,reference="1",chunk_size=1L,verbosity="quiet")
-  b <- combat_ref_ql(z$counts,z$batch,z$group,reference="1",chunk_size=5000L,verbosity="quiet")
+  a <- combat_ref_ql(z$counts,z$batch,z$group,reference="1",chunk_size=1L,verbose=FALSE)
+  b <- combat_ref_ql(z$counts,z$batch,z$group,reference="1",chunk_size=5000L,verbose=FALSE)
   expect_identical(a@counts,b@counts)
   unsupported <- !a@gene_status$mapping_valid
   expect_equal(a@counts[unsupported,],z$counts[unsupported,])
@@ -77,14 +77,13 @@ test_that("mapping slices fitted means inside each gene chunk", {
   expect_match(code, "dispersion\\$dispersion\\[chunk")
 })
 
-test_that("automatic reference and verbosity modes are deterministic", {
+test_that("automatic reference and verbose modes are deterministic", {
   z <- combatrefql_test_fixtures()[[1]]
-  quiet <- testthat::capture_messages(a <- combat_ref_ql(z$counts,z$batch,z$group,verbosity="quiet"))
-  normal <- testthat::capture_messages(b <- combat_ref_ql(z$counts,z$batch,z$group,verbosity="normal"))
-  verbose <- testthat::capture_messages(c <- combat_ref_ql(z$counts,z$batch,z$group,verbosity="verbose"))
-  expect_length(quiet,0L); expect_gt(length(normal),0L); expect_gte(length(verbose),length(normal))
-  expect_false(any(grepl("reference candidate|gene chunks", normal)))
-  expect_true(any(grepl("reference candidate", verbose)) && any(grepl("gene chunks", verbose)))
-  expect_identical(a@counts,b@counts); expect_identical(b@counts,c@counts)
+  quiet <- testthat::capture_messages(a <- combat_ref_ql(z$counts,z$batch,z$group,verbose=FALSE))
+  verbose <- testthat::capture_messages(b <- combat_ref_ql(z$counts,z$batch,z$group,verbose=TRUE))
+  expect_length(quiet,0L); expect_gt(length(verbose),0L)
+  expect_true(any(grepl("Prepared|Reference|Model fitted|Runtime", verbose)))
+  expect_false(any(grepl("reference candidate|gene chunks|Fitted preliminary model|Fitted final model|Mapped batch", verbose)))
+  expect_identical(a@counts,b@counts)
   expect_equal(sum(a@diagnostics$batches$selected),1L)
 })

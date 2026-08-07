@@ -12,9 +12,9 @@ test_that("adaptive EB responds to QL uncertainty and boundary pooling", {
 test_that("batch contrasts do not depend on factor level order", {
   z <- combatrefql_test_fixtures()[[2]]
   a <- combat_ref_ql(z$counts, factor(z$batch, c("batch_A", "batch_B")),
-    z$group, reference = "batch_A", verbosity = "quiet")
+    z$group, reference = "batch_A", verbose = FALSE)
   b <- combat_ref_ql(z$counts, factor(z$batch, c("batch_B", "batch_A")),
-    z$group, reference = "batch_A", verbosity = "quiet")
+    z$group, reference = "batch_A", verbose = FALSE)
   da <- a@diagnostics$batch_contrasts[order(a@diagnostics$batch_contrasts$gene), ]
   db <- b@diagnostics$batch_contrasts[order(b@diagnostics$batch_contrasts$gene), ]
   expect_equal(da$raw_delta, db$raw_delta, tolerance = 1e-8)
@@ -65,7 +65,7 @@ test_that("QL contrast covariance agrees with the edgeR one-df test", {
 test_that("batch dispersion is reference-centred and information weighted", {
   z <- combatrefql_test_fixtures()[[1]]
   fit <- combat_ref_ql(z$counts, z$batch, z$group, reference = "1",
-    verbosity = "quiet")
+    verbose = FALSE)
   dispersion <- fit@diagnostics$dispersion
   by_batch <- dispersion[!duplicated(dispersion$batch), ]
 
@@ -149,10 +149,9 @@ test_that("mid-P zero rule and distinct dispersions are explicit", {
 test_that("the public API exposes one integrated statistical method", {
   z <- combatrefql_test_fixtures()[[1]]
   fit <- combat_ref_ql(z$counts, z$batch, z$group, reference = "1",
-    verbosity = "quiet")
+    verbose = FALSE)
   expect_identical(names(formals(combat_ref_ql)), c("counts", "batch", "group",
-    "covariates", "reference", "normalization", "fractional_counts",
-    "chunk_size", "verbosity"))
+    "covariates", "reference", "fractional_counts", "chunk_size", "verbose"))
   expect_identical(fit@specification$method,
     "ComBat-refQL integrated reference-batch adjustment")
   expect_identical(fit@counts[, z$batch == 1], z$counts[, z$batch == 1])

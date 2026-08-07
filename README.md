@@ -45,6 +45,8 @@ corrected <- fit@counts
 summary(fit)
 ```
 
+Set `verbose = FALSE` to suppress fitting messages.
+
 Genes are rows and samples are columns. `batch` and `group` must follow the
 sample order in `counts`; `group` represents the biological condition that
 should be retained during adjustment.

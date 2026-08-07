@@ -10,10 +10,9 @@ combat_ref_ql(
   group = NULL,
   covariates = NULL,
   reference = NULL,
-  normalization = "TMMwsp",
   fractional_counts = c("round", "error"),
   chunk_size = 5000L,
-  verbosity = c("normal", "quiet", "verbose")
+  verbose = TRUE
 )
 }
 \arguments{
@@ -30,13 +29,12 @@ columns are recorded and omitted; redundant or aliased terms are errors.}
 \item{reference}{Optional reference batch. When \code{NULL}, the minimum-dispersion
 batch is selected from biologically adjusted within-batch QL fits.}
 
-\item{normalization}{edgeR library normalization method. Only \code{"TMMwsp"} is supported.}
-
 \item{fractional_counts}{Round with an audit record, or reject fractional values.}
 
 \item{chunk_size}{Positive number of genes transported per chunk.}
 
-\item{verbosity}{User output level.}
+\item{verbose}{Logical. If \code{TRUE}, print concise progress, outcome, and
+runtime messages. Warnings and errors are not suppressed when \code{FALSE}.}
 }
 \value{
 A validated \link{CombatRefQLFit} object with adjusted counts and structured
@@ -56,8 +54,7 @@ rownames(counts) <- paste0("gene", seq_len(nrow(counts)))
 colnames(counts) <- paste0("sample", seq_len(ncol(counts)))
 counts[, batch == "study"] <- counts[, batch == "study"] * 2
 
-fit <- combat_ref_ql(counts, batch, group, reference = "reference",
-  verbosity = "quiet")
+fit <- combat_ref_ql(counts, batch, group, reference = "reference")
 fit
 summary(fit)
 corrected <- fit@counts

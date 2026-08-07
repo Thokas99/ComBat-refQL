@@ -32,8 +32,7 @@ midp_transport <- function(counts, observed_mu, reference_mu,
 }
 
 transport_counts <- function(counts, keep, batch, reference, fit,
-                             shrinkage, dispersion, chunk_size,
-                             progress = function(...) NULL) {
+                             shrinkage, dispersion, chunk_size) {
   adjusted <- counts
   mapping <- list()
   supported_genes <- which(keep)
@@ -48,7 +47,6 @@ transport_counts <- function(counts, keep, batch, reference, fit,
     tail_events <- 0L
     zero_to_positive <- positive_to_zero <- 0L
     for (chunk in chunks) {
-      progress(source, length(chunk))
       observed_mu <- fit$fitted.values[chunk, sample_idx, drop = FALSE]
       delta <- shrinkage$posterior[[source]][chunk]
       reference_mu <- observed_mu * exp(-delta)

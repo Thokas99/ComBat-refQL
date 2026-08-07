@@ -49,7 +49,7 @@ run_validation <- function(counts, batch, group, dataset) {
   dimnames(counts) <- list(paste0("g", seq_len(nrow(counts))),
     paste0("s", seq_len(ncol(counts))))
 
-  fit <- combat_ref_ql(counts, batch, group, verbosity = "quiet")
+  fit <- combat_ref_ql(counts, batch, group, verbose = FALSE)
   reference <- fit@specification$reference_batch
   outcomes <- stats::setNames(fit@diagnostics$outcomes$genes,
     fit@diagnostics$outcomes$outcome)

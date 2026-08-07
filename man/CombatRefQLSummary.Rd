@@ -15,7 +15,8 @@ CombatRefQLSummary(
   dispersion,
   input_actions,
   warnings,
-  timings
+  timings,
+  confidence
 )
 }
 \arguments{
@@ -40,6 +41,8 @@ CombatRefQLSummary(
 \item{warnings}{Stored warning table.}
 
 \item{timings}{Stage timing table.}
+
+\item{confidence}{Correction-confidence counts.}
 }
 \description{
 A lightweight validated S7 summary returned by \code{summary(fit)}.

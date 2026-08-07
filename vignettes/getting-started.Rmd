@@ -24,6 +24,13 @@ summary(fit)
 corrected <- fit@counts
 ```
 
+To suppress fitting messages:
+
+```{r, eval=FALSE}
+fit <- combat_ref_ql(counts, batch = metadata$batch,
+  group = metadata$condition, verbose = FALSE)
+```
+
 Set an explicit target with `reference = "batch_name"`; otherwise the method
 selects a reference using biologically adjusted within-batch fits. Reference
 counts remain unchanged.
@@ -33,5 +40,6 @@ counts remain unchanged.
 dispersion multipliers, mapping events, and timings.
 
 Fractional counts are audibly rounded by default. Use
-`fractional_counts = "error"` to reject them. `chunk_size` controls transport
-memory without changing results, and `verbosity = "quiet"` suppresses progress.
+`fractional_counts = "error"` to reject them. Set `verbose = FALSE` to suppress
+fitting messages. `chunk_size` is an advanced transport-memory option that does
+not change results.

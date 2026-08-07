@@ -20,9 +20,9 @@ test_that("tau2 zero and invalid contrasts remain finite and explicit", {
 test_that("production uses adaptive EB with stable count contracts", {
   z <- combatrefql_test_fixtures()[[1L]]
   a <- combat_ref_ql(z$counts, z$batch, z$group, reference = "1",
-    verbosity = "quiet")
+    verbose = FALSE)
   b <- combat_ref_ql(z$counts, z$batch, z$group, reference = "1",
-    verbosity = "quiet")
+    verbose = FALSE)
   d <- a@diagnostics$batch_contrasts
 
   expect_identical(a@counts, b@counts)

@@ -77,12 +77,10 @@ test_that("explicit and automatic reference selection are deterministic", {
   expect_gte(first$batches$score_margin[1L], 0)
 
   other <- setdiff(levels(z$batch), first$reference)
-  scored <- 0L
   explicit <- combatrefql:::select_reference(dge, z$batch, z$group,
-    explicit = other, progress = function(...) scored <<- scored + 1L)
+    explicit = other)
   expect_identical(explicit$reference, other)
   expect_true(explicit$batches$selected[explicit$batches$batch == other])
   expect_true(all(explicit$batches$selection_method == "explicit"))
-  expect_equal(scored, 0L)
   expect_true(all(is.na(explicit$batches$reference_score)))
 })

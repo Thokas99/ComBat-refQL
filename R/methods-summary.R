@@ -20,5 +20,7 @@ S7::method(summary, CombatRefQLFit) <- function(object, ...) {
     batches = object@diagnostics$batches, gene_outcomes = object@diagnostics$outcomes,
     ql = object@diagnostics$ql, shrinkage = shrinkage,
     dispersion = dispersion, input_actions = object@diagnostics$input_actions,
-    warnings = object@diagnostics$warnings, timings = object@diagnostics$timing)
+    warnings = object@diagnostics$warnings, timings = object@diagnostics$timing,
+    confidence = list(genes = table(factor(object@diagnostics$correction_confidence$confidence_label,
+      levels = c("high", "moderate", "low", "failed")))))
 }

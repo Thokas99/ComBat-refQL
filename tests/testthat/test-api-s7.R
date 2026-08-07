@@ -1,6 +1,6 @@
 test_that("sole API returns validated lightweight S7 objects", {
   z <- combatrefql_test_fixtures()[[1]]
-  fit <- combat_ref_ql(z$counts, z$batch, z$group, reference = "1", verbosity = "quiet")
+  fit <- combat_ref_ql(z$counts, z$batch, z$group, reference = "1", verbose = FALSE)
   expect_true(S7::S7_inherits(fit, CombatRefQLFit))
   expect_identical(dim(fit@counts), dim(z$counts))
   expect_identical(dimnames(fit@counts), dimnames(z$counts))
@@ -18,17 +18,19 @@ test_that("old API and plotting are absent", {
 
 test_that("fit and summary printing orient without replay", {
   z <- combatrefql_test_fixtures()[[1]]
-  fit <- combat_ref_ql(z$counts, z$batch, z$group, reference = "1", verbosity = "quiet")
+  fit <- combat_ref_ql(z$counts, z$batch, z$group, reference = "1", verbose = FALSE)
   out <- testthat::capture_messages(print(fit))
-  expect_match(paste(out, collapse="\n"), "(?s)ComBat-refQL fit.*Data.*Model.*Outcome", perl=TRUE)
+  expect_match(paste(out, collapse="\n"), "(?s)ComBat-refQL fit.*Data.*Reference.*Outcome.*Confidence.*Runtime", perl=TRUE)
   expect_equal(sum(grepl("Reference", out)), 1L)
   sum_out <- testthat::capture_messages(print(summary(fit)))
-  expect_match(paste(sum_out, collapse="\n"), "(?s)Design.*Reference.*edgeR model.*Gene outcomes.*Timing", perl=TRUE)
+  expect_match(paste(sum_out, collapse="\n"), "(?s)Design.*Reference.*Batch adjustment.*Gene outcomes.*Correction confidence.*Runtime", perl=TRUE)
+  expect_false(any(grepl("edgeR model|Model-fitting pipeline|Timing", sum_out)))
 })
 
-test_that("progress uses homogeneous outcome messages", {
-  reporter <- new_reporter("normal")
+test_that("reporter supports only Boolean verbosity", {
+  reporter <- new_reporter(TRUE)
   output <- testthat::capture_messages(reporter$outcome(4, 2, 0))
   expect_match(paste(output, collapse = "\n"),
     "Adjusted 4 | Unchanged 2 | Failed 0", fixed = TRUE)
+  expect_length(testthat::capture_messages(new_reporter(FALSE)$outcome(4, 2, 0)), 0L)
 })
